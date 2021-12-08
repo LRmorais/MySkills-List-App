@@ -10,12 +10,21 @@ import {
 import {Button} from '../components/Button';
 import {SkillCard} from '../components/SkillCard';
 
+interface SkillData {
+  id: string;
+  name: string;
+}
+
 export const Home = () => {
   const [newSkill, setNewSkill] = useState('');
-  const [skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState<SkillData[]>([]);
 
   function handleAddNewSkill() {
-    setSkills(oldSkills => [...oldSkills, newSkill]);
+    const data = {
+      id: String(new Date().getTime()),
+      name: newSkill,
+    };
+    setSkills(oldSkills => [...oldSkills, data]);
   }
   return (
     <View style={styles.container}>
@@ -26,13 +35,13 @@ export const Home = () => {
         placeholderTextColor="#555"
         onChangeText={setNewSkill}
       />
-      <Button action={handleAddNewSkill} />
+      <Button title="Add" onPress={handleAddNewSkill} />
       <Text style={[styles.title, {marginTop: 20}]}>Skills</Text>
 
       <FlatList
         data={skills}
-        renderItem={({item}) => <SkillCard skill={item} />}
-        keyExtractor={(item, index) => index}
+        renderItem={({item}) => <SkillCard skill={item.name} />}
+        keyExtractor={item => item.id}
       />
     </View>
   );
